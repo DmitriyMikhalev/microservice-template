@@ -1,11 +1,7 @@
-from django.urls import include, path
-from .views import TaskView, TaskViewDetail
+from django.urls import path, include
 
+app_name = 'application'
 
 urlpatterns = [
-    path(route='auth/', view=include('djoser.urls')),
-    path(route='auth/', view=include('djoser.urls.jwt')),
-    path(route='tasks/', view=TaskView.as_view(), name='task-list'),
-    path(route='tasks/<int:pk>/', view=TaskViewDetail.as_view(),
-         name='task-detail')
+    path('v1/', include('application.v1.urls', namespace='api_v1'))
 ]

@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 from djoser.serializers import UserCreateSerializer as BaseUserCreateSerializer
 from djoser.serializers import UserSerializer as BaseUserSerializer
-from application.serializers import TaskSerializer
+from application.v1.serializers import TaskSerializer
 
 User = get_user_model()
 

@@ -13,8 +13,13 @@ from .serializers import TaskSerializer
 
 
 class TaskView(APIView, PageNumberPagination):
+    """
+    Despite the fact that the restriction of the rights "author or read" is
+    used, in the methods associated with requests, the content of which the
+    user of the request is not the author is forcibly excluded, so the
+    restrictions are expanded to "only the author has access".
+    """
     page_size = 3
-    permission_classes = (IsAuthorOrReadOnly,)
 
     def get(self, request):
         queryset = Task.objects.filter(author=request.user)  # hide other
@@ -33,7 +38,7 @@ class TaskView(APIView, PageNumberPagination):
 
         if serializer.is_valid():
             serializer.save(author=request.user)
-            return Response(data=serializer.data, status=HTTP_200_OK)
+            return Response(data=serializer.data, status=HTTP_201_CREATED)
 
         return Response(data=serializer.errors, status=HTTP_400_BAD_REQUEST)
 
@@ -71,15 +76,6 @@ class TaskViewDetail(APIView):
                 data=serializer.data,
                 status=HTTP_206_PARTIAL_CONTENT
             )
-
-        return Response(data=serializer.errors, status=HTTP_400_BAD_REQUEST)
-
-    def post(self, request, pk):
-        serializer = TaskSerializer(data=request.data)
-
-        if serializer.is_valid():
-            serializer.save(author=request.user)
-            return Response(data=serializer.data, status=HTTP_201_CREATED)
 
         return Response(data=serializer.errors, status=HTTP_400_BAD_REQUEST)
 

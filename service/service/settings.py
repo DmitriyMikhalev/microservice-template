@@ -12,7 +12,12 @@ SECRET_KEY = os.getenv('DJANGO_KEY')
 
 DEBUG = os.getenv('DEBUG')
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1',
+    '[::1]',
+    'testserver',
+]
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -85,7 +90,7 @@ TIME_ZONE = 'UTC'
 
 USE_I18N = True
 
-USE_TZ = True
+USE_TZ = False
 
 STATIC_URL = 'static/'
 
