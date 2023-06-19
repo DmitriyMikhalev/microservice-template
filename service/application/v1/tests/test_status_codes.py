@@ -65,7 +65,7 @@ class TestStatusCodes(APITestCase):
         request_kwargs = {'data': request_payload, 'format': 'json'}
         path_settings = {
             # array of objects
-            reverse(viewname=self.prefix+'list'): {
+            reverse(viewname=self.prefix + 'list'): {
                 self.authorized_client.get: {
                     'kwargs': {},
                     'expected_status': HTTP_200_OK
@@ -76,7 +76,7 @@ class TestStatusCodes(APITestCase):
                 }
             },
             # single object
-            reverse(kwargs={'pk': task_id}, viewname=self.prefix+'detail'): {
+            reverse(kwargs={'pk': task_id}, viewname=self.prefix + 'detail'): {
                 self.authorized_client.get: {
                     'kwargs': {},
                     'expected_status': HTTP_200_OK
@@ -121,12 +121,12 @@ class TestStatusCodes(APITestCase):
         request_kwargs = {'data': request_payload, 'format': 'json'}
         path_methods = {
             # array of objects
-            reverse(viewname=self.prefix+'list'): {
+            reverse(viewname=self.prefix + 'list'): {
                 self.client.get: {},
                 self.client.post: request_kwargs,
             },
             # single object
-            reverse(kwargs={'pk': task_id}, viewname=self.prefix+'detail'): {
+            reverse(kwargs={'pk': task_id}, viewname=self.prefix + 'detail'): {
                 self.client.get: {},
                 self.client.patch: request_kwargs,
                 self.client.put: request_kwargs,

@@ -1,6 +1,6 @@
 import os
-from pathlib import Path
 from datetime import timedelta
+from pathlib import Path
 
 from dotenv import load_dotenv
 
@@ -28,6 +28,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'application.apps.ApplicationConfig',
     'users.apps.UsersConfig',
+    'core.apps.CoreConfig',
     'rest_framework',
     'djoser'
 ]
@@ -107,8 +108,8 @@ REST_FRAMEWORK = {
 }
 
 SIMPLE_JWT = {
-   'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
-   'AUTH_HEADER_TYPES': ('Bearer',),
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
+    'AUTH_HEADER_TYPES': ('Bearer',),
 }
 
 DJOSER = {
@@ -120,3 +121,46 @@ DJOSER = {
 }
 
 AUTH_USER_MODEL = 'users.User'
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'test': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': 'general.log',
+            'formatter': 'default_formatter',
+        },
+        'request': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'formatter': 'default_formatter',
+            'filename': 'general.log',
+        }
+    },
+    'loggers': {
+        'root': {
+            'level': 'DEBUG',
+            'handlers': ['test']
+        },
+        'django.request': {
+            'level': 'DEBUG',
+            'filters': ['add_ip_address'],
+            'handlers': ['request'],
+            'propagate': False  # to avoid duplicates in the log
+        },
+    },
+    'filters': {
+        'add_ip_address': {
+            '()': 'core.logging_extension.IPAddressFilter'
+        }
+    },
+    'formatters': {
+        'default_formatter': {
+            'format': '[{levelname}] From: {ip} / {method} - {name} - {asctime} - {module} - {message}',
+            'style': '{',
+            'datefmt': '%Y-%m-%d %H:%M:%S'
+        },
+    },
+}
