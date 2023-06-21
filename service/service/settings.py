@@ -10,7 +10,7 @@ load_dotenv(BASE_DIR.parent / 'infra' / '.env')
 
 SECRET_KEY = os.getenv('DJANGO_KEY')
 
-DEBUG = os.getenv('DEBUG')
+DEBUG = 'true' == os.getenv(key='DEBUG', default=False).lower()  # returns string value instead of bool
 
 ALLOWED_HOSTS = [
     'localhost',
@@ -45,10 +45,12 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'service.urls'
 
+TEMPLATES_DIR = BASE_DIR / 'templates'
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [TEMPLATES_DIR],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -65,8 +67,12 @@ WSGI_APPLICATION = 'service.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': os.getenv(key='DB_ENGINE', default='django.db.backends.postgresql'),
+        'NAME': os.getenv(key='DB_NAME', default='db_name'),
+        'USER': os.getenv(key='DB_USER', default='db_user'),
+        'PASSWORD': os.getenv(key='DB_PASSWORD', default='db_password'),
+        'HOST': os.getenv(key='DB_HOST', default='db_host'),
+        'PORT': os.getenv(key='DB_PORT', default='db_port')
     }
 }
 
@@ -87,13 +93,19 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'ru'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = os.getenv(key='TIME_ZONE', default='Asia/Yekaterinburg')
 
 USE_I18N = True
 
 USE_TZ = False
 
-STATIC_URL = 'static/'
+STATIC_ROOT = BASE_DIR / 'static'
+
+STATIC_URL = '/static/'
+
+MEDIA_ROOT = BASE_DIR / 'media'
+
+MEDIA_URL = '/media/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
@@ -113,6 +125,7 @@ SIMPLE_JWT = {
 }
 
 DJOSER = {
+    # Use custom serializers instead of standard djoser serializers
     'SERIALIZERS': {
         'user_create': 'users.serializers.UserCreateSerializer',
         'user': 'users.serializers.UserSerializer',
@@ -126,28 +139,28 @@ LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
     'handlers': {
-        'test': {
-            'level': 'DEBUG',
+        'default_handler': {
+            'level': os.getenv(key='DEFAULT_HANDLER_LEVEL', default='DEBUG'),
             'class': 'logging.FileHandler',
-            'filename': 'general.log',
+            'filename': os.getenv(key='DEFAULT_HANDLER_LOG_FILENAME', default='DEBUG'),
             'formatter': 'default_formatter',
         },
-        'request': {
-            'level': 'DEBUG',
+        'request_handler': {
+            'level': os.getenv(key='REQUEST_HANDLER_LEVEL', default='DEBUG'),
             'class': 'logging.FileHandler',
-            'formatter': 'default_formatter',
-            'filename': 'general.log',
+            'formatter': 'request_formatter',
+            'filename': os.getenv(key='REQUEST_HANDLER_LOG_FILENAME', default='DEBUG'),
         }
     },
     'loggers': {
-        'root': {
-            'level': 'DEBUG',
-            'handlers': ['test']
+        'default_logger': {
+            'level': os.getenv(key='DEFAULT_LOGGER_LEVEL', default='DEBUG'),
+            'handlers': ['default_handler']
         },
         'django.request': {
-            'level': 'DEBUG',
+            'level': os.getenv(key='REQUEST_LOGGER_LEVEL', default='DEBUG'),
             'filters': ['add_ip_address'],
-            'handlers': ['request'],
+            'handlers': ['request_handler'],
             'propagate': False  # to avoid duplicates in the log
         },
     },
@@ -157,10 +170,16 @@ LOGGING = {
         }
     },
     'formatters': {
-        'default_formatter': {
+        'request_formatter': {
             'format': '[{levelname}] From: {ip} / {method} - {name} - {asctime} - {module} - {message}',
             'style': '{',
             'datefmt': '%Y-%m-%d %H:%M:%S'
         },
+        'default_formatter': {
+            'format': '[{levelname}] {name} - {asctime} - {module} - {message}',
+            'style': '{',
+            'datefmt': '%Y-%m-%d %H:%M:%S'
+        }
+
     },
 }

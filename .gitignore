@@ -3,7 +3,9 @@ __vscode__/
 venv/
 env/
 .vscode/
+static/
+media/
 
+*.log
 .env
 !sample.env
-db.sqlite3

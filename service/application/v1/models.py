@@ -1,6 +1,6 @@
-from django.db.models import (CheckConstraint, DateTimeField, F, ForeignKey,
-                              Model, Q, TextField, CASCADE)
 from django.contrib.auth import get_user_model
+from django.db.models import (CASCADE, CheckConstraint, DateTimeField, F,
+                              ForeignKey, Model, Q, TextField)
 
 User = get_user_model()
 
@@ -9,11 +9,12 @@ class Task(Model):
     author = ForeignKey(
         on_delete=CASCADE,
         related_name='tasks',
-        to=User
+        to=User,
+        verbose_name='Автор'
     )
-    description = TextField()
-    finish_date = DateTimeField()
-    start_date = DateTimeField()
+    description = TextField(verbose_name='Описание')
+    finish_date = DateTimeField(verbose_name='Начало')
+    start_date = DateTimeField(verbose_name='Окончание')
 
     class Meta:
         constraints = [
@@ -23,3 +24,5 @@ class Task(Model):
             )
         ]
         ordering = ('-start_date',)
+        verbose_name = 'Задача'
+        verbose_name_plural = 'Задачи'
