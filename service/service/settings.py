@@ -30,7 +30,8 @@ INSTALLED_APPS = [
     'users.apps.UsersConfig',
     'core.apps.CoreConfig',
     'rest_framework',
-    'djoser'
+    'djoser',
+    'drf_yasg',
 ]
 
 MIDDLEWARE = [
@@ -142,19 +143,20 @@ LOGGING = {
         'default_handler': {
             'level': os.getenv(key='DEFAULT_HANDLER_LEVEL', default='DEBUG'),
             'class': 'logging.FileHandler',
-            'filename': os.getenv(key='DEFAULT_HANDLER_LOG_FILENAME', default='DEBUG'),
+            'filename': os.getenv(key='DEFAULT_HANDLER_LOG_FILENAME', default='general.log'),
             'formatter': 'default_formatter',
         },
         'request_handler': {
             'level': os.getenv(key='REQUEST_HANDLER_LEVEL', default='DEBUG'),
             'class': 'logging.FileHandler',
-            'formatter': 'request_formatter',
-            'filename': os.getenv(key='REQUEST_HANDLER_LOG_FILENAME', default='DEBUG'),
+            'filename': os.getenv(key='REQUEST_HANDLER_LOG_FILENAME', default='general.log'),
+            'formatter': 'default_formatter',
         }
     },
     'loggers': {
-        'default_logger': {
+        '': {
             'level': os.getenv(key='DEFAULT_LOGGER_LEVEL', default='DEBUG'),
+            'filters': ['add_ip_address'],
             'handlers': ['default_handler']
         },
         'django.request': {
@@ -170,16 +172,20 @@ LOGGING = {
         }
     },
     'formatters': {
-        'request_formatter': {
+        'default_formatter': {
             'format': '[{levelname}] From: {ip} / {method} - {name} - {asctime} - {module} - {message}',
             'style': '{',
             'datefmt': '%Y-%m-%d %H:%M:%S'
         },
-        'default_formatter': {
-            'format': '[{levelname}] {name} - {asctime} - {module} - {message}',
-            'style': '{',
-            'datefmt': '%Y-%m-%d %H:%M:%S'
-        }
-
     },
+}
+
+SWAGGER_SETTINGS = {
+   'SECURITY_DEFINITIONS': {
+      'Bearer': {
+            'type': 'apiKey',
+            'name': 'Authorization',
+            'in': 'header'
+      }
+   }
 }

@@ -1,8 +1,7 @@
 from application.v1.models import Task, User
 from django.urls import reverse
-from rest_framework.status import (HTTP_200_OK, HTTP_204_NO_CONTENT,
-                                   HTTP_206_PARTIAL_CONTENT, HTTP_201_CREATED,
-                                   HTTP_401_UNAUTHORIZED)
+from rest_framework.status import (HTTP_200_OK, HTTP_201_CREATED,
+                                   HTTP_204_NO_CONTENT, HTTP_401_UNAUTHORIZED)
 from rest_framework.test import APIClient, APITestCase
 from rest_framework_simplejwt.tokens import RefreshToken
 
@@ -83,7 +82,7 @@ class TestStatusCodes(APITestCase):
                 },
                 self.authorized_client.patch: {
                     'kwargs': request_kwargs,
-                    'expected_status': HTTP_206_PARTIAL_CONTENT
+                    'expected_status': HTTP_200_OK
                 },
                 self.authorized_client.put: {
                     'kwargs': request_kwargs,

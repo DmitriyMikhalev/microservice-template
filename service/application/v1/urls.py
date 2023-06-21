@@ -1,4 +1,5 @@
 from django.urls import include, path
+
 from .views import TaskView, TaskViewDetail
 
 app_name = 'api_v1'
@@ -8,5 +9,5 @@ urlpatterns = [
     path(route='auth/', view=include('djoser.urls.jwt')),
     path(route='tasks/', view=TaskView.as_view(), name='task-list'),
     path(route='tasks/<int:pk>/', view=TaskViewDetail.as_view(),
-         name='task-detail')
+         name='task-detail'),
 ]
