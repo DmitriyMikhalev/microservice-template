@@ -179,7 +179,7 @@ LOGGING = {
 
 SWAGGER_SETTINGS = {
     'SECURITY_DEFINITIONS': {
-       'Bearer': {
+        'Bearer': {
             'type': 'apiKey',
             'name': 'Authorization',
             'in': 'header'
