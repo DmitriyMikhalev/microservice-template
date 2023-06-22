@@ -1,0 +1,37 @@
+services:
+  microservice_backend:
+    image: cokasqq/microservice-template
+    volumes:
+      - template-media-volume:/microservice_backend/media/
+      - template-static-volume:/microservice_backend/static/
+    depends_on:
+      - microservice_database
+    env_file:
+      - .env
+
+  microservice_nginx:
+    image: nginx:1.21.3-alpine
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+      - template-media-volume:/var/html/media/
+      - template-static-volume:/var/html/static/
+    depends_on:
+      - microservice_database
+
+  microservice_database:
+    image: postgres:13.0-alpine
+    restart: always
+    volumes:
+      - microservice-database-volume:/var/lib/postgresql/data/
+    # keys and values should be copied to .env to connect from Django container
+    environment:
+      - POSTGRES_USER=postgres_user_name
+      - POSTGRES_PASSWORD=potgres_user_password
+      - POSTGRES_DB=template_name_database
+
+volumes:
+  template-media-volume:
+  template-static-volume:
+  microservice-database-volume:

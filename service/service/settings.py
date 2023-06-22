@@ -10,7 +10,7 @@ load_dotenv(BASE_DIR.parent / 'infra' / '.env')
 
 SECRET_KEY = os.getenv('DJANGO_KEY')
 
-DEBUG = bool(os.getenv(key='DEBUG', default=''))
+DEBUG = int(os.getenv(key='DEBUG', default='0'))
 
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', default='').split()
 
@@ -27,11 +27,13 @@ INSTALLED_APPS = [
     'rest_framework',
     'djoser',
     'drf_yasg',
+    'corsheaders'
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -64,9 +66,9 @@ WSGI_APPLICATION = 'service.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': os.getenv(key='DB_ENGINE', default='django.db.backends.postgresql'),
-        'NAME': os.getenv(key='DB_NAME', default='db_name'),
-        'USER': os.getenv(key='DB_USER', default='db_user'),
-        'PASSWORD': os.getenv(key='DB_PASSWORD', default='db_password'),
+        'NAME': os.getenv(key='POSTGRES_DB', default='db_name'),
+        'USER': os.getenv(key='POSTGRES_USER', default='db_user'),
+        'PASSWORD': os.getenv(key='POSTGRES_PASSWORD', default='db_password'),
         'HOST': os.getenv(key='DB_HOST', default='db_host'),
         'PORT': os.getenv(key='DB_PORT', default='db_port')
     }
@@ -184,3 +186,7 @@ SWAGGER_SETTINGS = {
         }
     }
 }
+
+CORS_ALLOW_ALL_ORIGINS = int(os.getenv(key='CORS_ALLOW_ALL_ORIGINS', default='1'))
+
+CORS_ALLOWED_ORIGINS = os.getenv(key='CORS_ALLOWED_ORIGINS', default='').split()
