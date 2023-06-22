@@ -10,14 +10,9 @@ load_dotenv(BASE_DIR.parent / 'infra' / '.env')
 
 SECRET_KEY = os.getenv('DJANGO_KEY')
 
-DEBUG = 'true' == os.getenv(key='DEBUG', default=False).lower()  # returns string value instead of bool
+DEBUG = bool(os.getenv(key='DEBUG', default=''))
 
-ALLOWED_HOSTS = [
-    'localhost',
-    '127.0.0.1',
-    '[::1]',
-    'testserver',
-]
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', default='').split()
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -181,11 +176,11 @@ LOGGING = {
 }
 
 SWAGGER_SETTINGS = {
-   'SECURITY_DEFINITIONS': {
-      'Bearer': {
+    'SECURITY_DEFINITIONS': {
+       'Bearer': {
             'type': 'apiKey',
             'name': 'Authorization',
             'in': 'header'
-      }
-   }
+        }
+    }
 }

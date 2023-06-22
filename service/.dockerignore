@@ -1,0 +1,10 @@
+*.log
+*.env
+
+!sample.env
+
+venv/
+__pycache__/
+__vscode__/
+static/
+media/
