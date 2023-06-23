@@ -7,16 +7,15 @@ from drf_yasg import openapi
 
 schema_view = get_schema_view(
     openapi.Info(
-       title='Example microservice API',
-       default_version='v1',
-       description='Docs for TODO service',
-       contact=openapi.Contact(email='example@google.com'),
-       license=openapi.License(name='BSD License'),
+        title='Example microservice API',
+        default_version='v1',
+        description='Docs for TODO service',
+        contact=openapi.Contact(email='example@google.com'),
+        license=openapi.License(name='BSD License'),
     ),
     public=True,
     permission_classes=(permissions.AllowAny,),
 )
-
 
 urlpatterns = [
     path(
@@ -44,4 +43,7 @@ urlpatterns = [
         view=schema_view.with_ui('redoc', cache_timeout=0),
         name='schema-redoc'
     ),
+
+    # Metrics
+    path('', include('django_prometheus.urls'))
 ]

@@ -1,11 +1,12 @@
 from django.contrib.auth import get_user_model
 from django.db.models import (CASCADE, CheckConstraint, DateTimeField, F,
                               ForeignKey, Model, Q, TextField)
+from django_prometheus.models import ExportModelOperationsMixin
 
 User = get_user_model()
 
 
-class Task(Model):
+class Task(ExportModelOperationsMixin('task'), Model):
     author = ForeignKey(
         on_delete=CASCADE,
         related_name='tasks',

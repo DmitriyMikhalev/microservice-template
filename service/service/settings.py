@@ -27,10 +27,12 @@ INSTALLED_APPS = [
     'rest_framework',
     'djoser',
     'drf_yasg',
-    'corsheaders'
+    'corsheaders',
+    'django_prometheus'
 ]
 
 MIDDLEWARE = [
+    'django_prometheus.middleware.PrometheusBeforeMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',
@@ -39,6 +41,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django_prometheus.middleware.PrometheusAfterMiddleware'
 ]
 
 ROOT_URLCONF = 'service.urls'
@@ -65,7 +68,7 @@ WSGI_APPLICATION = 'service.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': os.getenv(key='DB_ENGINE', default='django.db.backends.postgresql'),
+        'ENGINE': os.getenv(key='DB_ENGINE', default='django_prometheus.db.backends.postgresql'),
         'NAME': os.getenv(key='POSTGRES_DB', default='db_name'),
         'USER': os.getenv(key='POSTGRES_USER', default='db_user'),
         'PASSWORD': os.getenv(key='POSTGRES_PASSWORD', default='db_password'),
@@ -140,15 +143,15 @@ LOGGING = {
         'default_handler': {
             'level': os.getenv(key='DEFAULT_HANDLER_LEVEL', default='DEBUG'),
             'class': 'logging.FileHandler',
-            'filename': os.getenv(key='DEFAULT_HANDLER_LOG_FILENAME', default='general.log'),
+            'filename': 'general.log',
             'formatter': 'default_formatter',
         },
         'request_handler': {
             'level': os.getenv(key='REQUEST_HANDLER_LEVEL', default='DEBUG'),
             'class': 'logging.FileHandler',
-            'filename': os.getenv(key='REQUEST_HANDLER_LOG_FILENAME', default='general.log'),
+            'filename': 'general.log',
             'formatter': 'default_formatter',
-        }
+        },
     },
     'loggers': {
         '': {
@@ -187,6 +190,6 @@ SWAGGER_SETTINGS = {
     }
 }
 
-CORS_ALLOW_ALL_ORIGINS = int(os.getenv(key='CORS_ALLOW_ALL_ORIGINS', default='1'))
+CORS_ALLOW_ALL_ORIGINS = bool(os.getenv(key='CORS_ALLOW_ALL_ORIGINS', default=''))
 
 CORS_ALLOWED_ORIGINS = os.getenv(key='CORS_ALLOWED_ORIGINS', default='').split()

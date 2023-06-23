@@ -4,10 +4,12 @@ services:
     volumes:
       - template-media-volume:/microservice_backend/media/
       - template-static-volume:/microservice_backend/static/
+      - ../service/general.log:/microservice_backend/general.log
     depends_on:
       - microservice_database
     env_file:
       - .env
+    restart: unless-stopped
 
   microservice_nginx:
     image: nginx:1.21.3-alpine
@@ -19,10 +21,10 @@ services:
       - template-static-volume:/var/html/static/
     depends_on:
       - microservice_database
+    restart: unless-stopped
 
   microservice_database:
     image: postgres:13.0-alpine
-    restart: always
     volumes:
       - microservice-database-volume:/var/lib/postgresql/data/
     # keys and values should be copied to .env to connect from Django container
@@ -30,6 +32,47 @@ services:
       - POSTGRES_USER=postgres_user_name
       - POSTGRES_PASSWORD=potgres_user_password
       - POSTGRES_DB=template_name_database
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres_user_name -d template_name_database"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    restart: unless-stopped
+
+  prometheus:
+    image: prom/prometheus:v2.35.0
+    ports:
+      - 9090:9090
+    volumes:
+      - ./prometheus:/etc/prometheus
+    command: --config.file=/etc/prometheus/prometheus.yaml
+
+  grafana:
+    image: grafana/grafana:8.5.2
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./grafana/dashboard.yaml:/etc/grafana/provisioning/datasources/dashboard.yaml
+    depends_on:
+      - prometheus
+      - loki
+
+  promtail:
+    image: grafana/promtail:2.5.0
+    volumes:
+      - ./promtail/promtail.yaml:/etc/promtail/promtail.yaml
+      - ../service/general.log:/var/log/general.log
+    command: --config.file=/etc/promtail/promtail.yaml
+    depends_on:
+      - microservice_backend
+
+  loki:
+    image: grafana/loki:2.5.0
+    ports:
+      - "3100:3100"
+    depends_on:
+      - promtail
 
 volumes:
   template-media-volume:
