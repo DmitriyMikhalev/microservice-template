@@ -21,12 +21,3 @@ datasources:
     isDefault: false
     version: 1
     editable: true
-    jsonData:
-      derivedFields:
-        - datasourceUid: my-jaeger
-          name: TraceID
-          matcherRegex: trace_id=(\w+)
-          url: '$${__value.raw}'
-        - name: TraceID
-          matcherRegex: trace_id=(\w+)
-          url: 'http://localhost:16686/trace/$${__value.raw}'
