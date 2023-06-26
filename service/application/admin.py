@@ -1,5 +1,5 @@
-from django.contrib.admin import ModelAdmin, register
 from application.v1.models import Task
+from django.contrib.admin import ModelAdmin, register
 from django.urls import reverse
 from django.utils.html import format_html
 

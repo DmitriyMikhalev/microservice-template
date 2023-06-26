@@ -5,9 +5,9 @@ from django.urls import reverse_lazy
 from rest_framework.generics import (CreateAPIView, DestroyAPIView,
                                      ListAPIView, RetrieveAPIView,
                                      UpdateAPIView)
-from .paginations import CustomPagination
 
 from .models import Task
+from .paginations import CustomPagination
 from .permissions import IsAuthorOrReadOnly
 from .serializers import TaskSerializer
 
